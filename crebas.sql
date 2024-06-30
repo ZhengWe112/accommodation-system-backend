@@ -284,7 +284,7 @@ create table park
 create table responsible_leader
 (
     id                   bigint auto_increment not null comment '主键',
-    role_id              smallint default 4 comment '外键 关联到表role 维修管理员的角色 默认都是4 一般不会改变',
+    role_id              smallint default 4 comment '外键 关联到表role 分管领导的角色 默认都是4 一般不会改变',
     fullname             varchar(15) comment '全名',
     job_id               char(13) comment '工号 用于登录 固定为13位 虽然也是以id结尾 但它不是外键',
     password             varchar(20) comment '密码',
@@ -396,7 +396,7 @@ create table student
 (
     id                   bigint auto_increment not null comment '主键',
     bed_id               bigint comment '外键 关联到表bed 这个学生的床位',
-    role_id              smallint default 6 comment '外键 关联到表role 维修管理员的角色 默认都是6 一般不会改变',
+    role_id              smallint default 6 comment '外键 关联到表role 学生的角色 默认都是6 一般不会改变',
     fullname             varchar(15) comment '全名',
     password             varchar(20) comment '密码',
     student_id           char(13) comment '学号 固定为13为 虽然以id结尾 但它不是外键',
@@ -419,7 +419,7 @@ create table student
 create table system_administrator
 (
     id                   bigint auto_increment not null comment '主键',
-    role_id              smallint default 1 comment '外键 关联到表role 维修管理员的角色 默认都是1 一般不会改变',
+    role_id              smallint default 1 comment '外键 关联到表role 系统管理员的角色 默认都是1 一般不会改变',
     fullname             varchar(15) comment '全名',
     job_id               char(13) comment '工号 用于登录 固定为13位 虽然也是以id结尾 但它不是外键',
     password             varchar(20) comment '密码',
@@ -436,7 +436,7 @@ create table teacher
 (
     id                   bigint auto_increment not null comment '主键',
     bed_id               bigint comment '外键 关联到表bed 这个教师的床位',
-    role_id              smallint default 5 comment '外键 关联到表role 维修管理员的角色 默认都是5 一般不会改变',
+    role_id              smallint default 5 comment '外键 关联到表role 教师的角色 默认都是5 一般不会改变',
     fullname             varchar(15) comment '全名',
     password             varchar(20) comment '密码',
     teacher_id           char(13) comment '教师号 固定为13为 虽然以id结尾 但它不是外键',
@@ -471,6 +471,7 @@ create table violation_record
     violation_item       varchar(50) comment '违规的项',
     reason               varchar(80) comment '定性为违规的理由',
     violation_degree     smallint comment '违规的程度 0记过 1严重警告 2警告',
+    state                smallint default 0 comment '状态 0未送审分管领导 1分管领导审核中 2分管领导已扣分，已发送警告，完成',
     create_time          datetime default current_timestamp,
     update_time          datetime default current_timestamp on update current_timestamp,
     is_deleted           bool default 0,
