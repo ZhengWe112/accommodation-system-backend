@@ -1,202 +1,85 @@
 package com.example.mybatisplus;
 
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.generator.AutoGenerator;
-import com.baomidou.mybatisplus.generator.InjectionConfig;
-import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.generator.FastAutoGenerator;
+import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
+import com.baomidou.mybatisplus.generator.fill.Column;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.Collections;
 
 public class CodeGenerator {
 
-    /**
-     * Project package
-     */
-    private static String projectPackage;
-
-    /**
-     * controller package
-     */
-    private static String controllerPackage;
-
-    /**
-     * entity package
-     */
-    private static String entityPackage;
-
-    /**
-     * author
-     */
-    private static String author;
-
-    /**
-     * Database url
-     */
-    private static String url;
-    /**
-     * Database username
-     */
-    private static String username;
-    /**
-     * Database password
-     */
-    private static String password;
-    /**
-     * Database driver class
-     */
-    private static String driverClass;
-
-    /**
-     * 文件名后缀
-     */
-    private static String fileSuffix = ".java";
-
-    /**
-     * Init database information
-     */
-    static {
-        Properties properties = new Properties();
-        InputStream i = CodeGenerator.class.getResourceAsStream("/mybatis-plus.properties");
-        try {
-            properties.load(i);
-            projectPackage = properties.getProperty("generator.parent.package");
-            controllerPackage = properties.getProperty("controller.package");
-            entityPackage = properties.getProperty("entity.package");
-            url = properties.getProperty("generator.jdbc.url");
-            username = properties.getProperty("generator.jdbc.username");
-            password = properties.getProperty("generator.jdbc.password");
-            driverClass = properties.getProperty("generator.jdbc.driverClass");
-            author = properties.getProperty("author");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * main method, execute code generator
-     */
     public static void main(String[] args) {
-        String projectPath = System.getProperty("user.dir");
+        // 1、配置数据源
+        FastAutoGenerator.create("jdbc:mysql://localhost:3306/accommodation_management_system?userSSL=false", "root", "123456")
+                // 2、全局配置
+                .globalConfig(builder -> {
+                    builder.author("team01") // 设置作者名
+                            .outputDir(System.getProperty("user.dir") + "/src/main/java")   //设置输出路径：项目的 java 目录下
+                            .commentDate("yyyy-MM-dd hh:mm:ss")   // 注释日期
+                            .dateType(DateType.ONLY_DATE)   // 定义生成的实体类中日期的类型 TIME_PACK=LocalDateTime;ONLY_DATE=Date;
+                            .fileOverride()   // 覆盖之前的文件
+                            .enableSwagger()   // 开启 swagger 模式
+                            .disableOpenDir();   // 禁止打开输出目录，默认打开
+                })
+                // 3、包配置
+                .packageConfig(builder -> {
+                    builder.parent("com") // 设置父包名
+                            .moduleName("example.mybatisplus")   // 设置模块包名
+                            .entity("model.domain")   // pojo 实体类包名
+                            .service("service") // Service 包名
+                            .serviceImpl("service.impl") // ***ServiceImpl 包名
+                            .mapper("mapper")   //Mapper 包名
+                            .xml("mapper")  // Mapper XML 包名
+                            .controller("web.controller") //Controller 包名
+                            .other("common") // 自定义文件包名
+                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir") + "/src/main/resources/mapper"));    // 配置 mapper.xml 路径信息：项目的 resources 目录下
+                })
+                // 4、策略配置
+                .strategyConfig(builder -> {
+                    builder.addInclude("responsible_leader") // 设置需要生成的数据表名
 
-        String javaPath = projectPackage.replaceAll("\\.", "/");
-        // 代码生成器
-        AutoGenerator mpg = new AutoGenerator();
+                            // 4.1、Mapper策略配置
+                            .mapperBuilder()
+                            .formatMapperFileName("%sMapper")   // 格式化 mapper 文件名称
+                            .enableMapperAnnotation()       // 开启 @Mapper 注解
+                            .formatXmlFileName("%sXml") // 格式化 Xml 文件名称
 
-        // 全局配置
-        GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir(projectPath + "/src/main/java"); // 输出文件目录
-        gc.setFileOverride(true); // 是否覆盖已有文件
-        gc.setOpen(false); // 是否打开输出目录
-        gc.setAuthor(author);
-        gc.setSwagger2(true);  // 实体属性 Swagger2 注解
-        gc.setMapperName("%sMapper");
-        gc.setXmlName("%sMapper");
-        gc.setServiceName("%sService");
-        gc.setServiceImplName("%sServiceImpl");
-        gc.setBaseResultMap(true); // mapper.xml中生成BaseResultMap
-        gc.setActiveRecord(true);
+                            // 4.2、service 策略配置
+                            .serviceBuilder()
+                            .formatServiceFileName("%sService") //格式化 service 接口文件名称，%s进行匹配表名，如 UserService
+                            .formatServiceImplFileName("%sServiceImpl") //格式化 service 实现类文件名称，%s进行匹配表名，如 UserServiceImpl
 
-        // 数据源配置
-        DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl(url);
-        dsc.setUsername(username);
-        dsc.setPassword(password);
-        dsc.setDriverName(driverClass);
+                            // 4.3、实体类策略配置
+                            .entityBuilder()
+                            .enableLombok() // 开启 Lombok
+                            // .disableSerialVersionUID()  // 不实现 Serializable 接口，不生产 SerialVersionUID
+                            .logicDeleteColumnName("deleted")   // 逻辑删除字段名
+                            .naming(NamingStrategy.underline_to_camel)  // 数据库表映射到实体的命名策略：下划线转驼峰命
+                            .columnNaming(NamingStrategy.underline_to_camel)    // 数据库表字段映射到实体的命名策略：下划线转驼峰命
+                            .addTableFills(
+                                    new Column("create_time", FieldFill.INSERT),
+                                    new Column("modify_time", FieldFill.INSERT_UPDATE)
+                            )   // 添加表字段填充，"create_time"字段自动填充为插入时间，"modify_time"字段自动填充为插入修改时间
+                            .enableTableFieldAnnotation()       // 开启生成实体时生成字段注解
+                            .enableChainModel() // 启用lombok链式注解
 
-        // 包配置
-        PackageConfig pc = new PackageConfig();
-        pc.setParent(projectPackage);
-        pc.setController(controllerPackage);
-        pc.setEntity(entityPackage);
+                            // 4.4、Controller策略配置
+                            .controllerBuilder()
+                            .formatFileName("%sController") // 格式化 Controller 类文件名称，%s进行匹配表名，如 UserController
+                            .enableRestStyle();  // 开启生成 @RestController 控制器
+                })
+                //5、模板
+                .templateEngine(new VelocityTemplateEngine())
+                /*
+                    .templateEngine(new FreemarkerTemplateEngine())
+                    .templateEngine(new BeetlTemplateEngine())
+                */
 
-        // 自定义配置
-        InjectionConfig cfg = new InjectionConfig() {
-            @Override
-            public void initMap() {
-                // to do nothing
-            }
-        };
-
-
-        // 自定义输出配置
-        List<FileOutConfig> focList = new ArrayList<>();
-
-        // 如果模板引擎是 freemarker
-        String templatePath = "/templates/mapper.xml.ftl";
-        // 自定义配置会被优先输出
-        focList.add(new FileOutConfig(templatePath) {
-
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                return projectPath + "/src/main/resources/mapper/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
-            }
-
-        });
-
-
-        // 如果模板引擎是 freemarker
-        String entityPath = "/templates/entity.java.ftl";
-        // 自定义配置会被优先输出
-        focList.add(new FileOutConfig(entityPath) {
-
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                return projectPath + "/src/main/java/" + javaPath + "/model/domain/" + tableInfo.getEntityName() + fileSuffix;
-            }
-
-        });
-
-        // 如果模板引擎是 freemarker
-        String controllerPath = "/templates/controller.java.ftl";
-        // 自定义配置会被优先输出
-        focList.add(new FileOutConfig(controllerPath) {
-
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                return projectPath + "/src/main/java/" + javaPath + "/web/controller/" + tableInfo.getEntityName() + "Controller" + fileSuffix;
-            }
-
-        });
-
-
-        cfg.setFileOutConfigList(focList);
-
-        // 配置模板
-        TemplateConfig templateConfig = new TemplateConfig();
-        templateConfig.setController(null);
-        templateConfig.setEntity(null);
-        templateConfig.setXml(null);
-
-
-        // 策略配置
-        StrategyConfig strategy = new StrategyConfig();
-        strategy.setNaming(NamingStrategy.underline_to_camel);
-        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setRestControllerStyle(true);
-        strategy.setSuperControllerClass("com.example.mybatisplus.common.BaseController");
-        strategy.setEntityLombokModel(true);//启用lombok注解
-        strategy.setChainModel(true);//启用lombok链式注解
-        strategy.setInclude("admin");
-       //strategy.setTablePrefix("caps_");//去表前缀配置
-
-        mpg.setGlobalConfig(gc);
-        mpg.setDataSource(dsc);
-        mpg.setPackageInfo(pc);
-        mpg.setCfg(cfg);
-        mpg.setTemplate(templateConfig);
-        mpg.setStrategy(strategy);
-        mpg.setTemplateEngine(new FreemarkerTemplateEngine());
-
-        mpg.execute();
+                //6、执行
+                .execute();
     }
 }

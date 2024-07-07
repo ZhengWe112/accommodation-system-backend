@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
     @GetMapping("/userInfo")
-    public JsonResponse<UserInfoDTO> getUserInfo() {
-        return JsonResponse.success(SecurityUtils.getCurrentUserInfo());
+    public JsonResponse getUserInfo() {
+        UserInfoDTO userInfoDTO = SecurityUtils.getCurrentUserInfo();
+        if (userInfoDTO != null) {
+            return JsonResponse.success(userInfoDTO);
+        }
+        return JsonResponse.failure("未登录").setCode(70005);
     }
 }

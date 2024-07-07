@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class UserInfoDTO {
     private Long id;
     private String name;
-    private Long userType;
+    private Integer userType;
 }

@@ -19,6 +19,6 @@ public class SessionUtils {
     }
 
     public static void saveCurrentUserInfo(UserInfoDTO userInfo) {
-        session().setAttribute(USERKEY + userInfo.getId(), userInfo);
+        session().setAttribute(USERKEY, userInfo);
     }
 }
