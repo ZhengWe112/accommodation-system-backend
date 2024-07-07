@@ -91,7 +91,7 @@ public class LoginController {
             }
             case 6 -> {
                 LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(Student::getFullname, info.getNumber()).eq(Student::getPassword, info.getPassword());
+                wrapper.eq(Student::getStudentId, info.getNumber()).eq(Student::getPassword, info.getPassword());
                 Student student = studentService.getOne(wrapper);
                 if (student != null) {
                     UserInfoDTO userInfoDTO = new UserInfoDTO(student.getId(), student.getFullname(), student.getRoleId());
