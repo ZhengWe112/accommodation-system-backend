@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author team01
- * @since 2024-07-07 06:15:11
+ * @since 2024-07-08 03:17:29
  */
 @Service
 public class DormitoryAdministratorServiceImpl extends ServiceImpl<DormitoryAdministratorMapper, DormitoryAdministrator> implements DormitoryAdministratorService {

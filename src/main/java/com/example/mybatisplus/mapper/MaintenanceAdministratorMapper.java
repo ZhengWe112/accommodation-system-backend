@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author team01
- * @since 2024-07-07 06:15:11
+ * @since 2024-07-08 03:17:54
  */
 @Mapper
 public interface MaintenanceAdministratorMapper extends BaseMapper<MaintenanceAdministrator> {

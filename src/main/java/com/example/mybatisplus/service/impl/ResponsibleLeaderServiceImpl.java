@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author team01
- * @since 2024-07-07 06:25:08
+ * @since 2024-07-08 03:17:54
  */
 @Service
 public class ResponsibleLeaderServiceImpl extends ServiceImpl<ResponsibleLeaderMapper, ResponsibleLeader> implements ResponsibleLeaderService {

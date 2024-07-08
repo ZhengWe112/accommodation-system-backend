@@ -1,9 +1,13 @@
 package com.example.mybatisplus.model.domain;
 
-import com.baomidou.mybatisplus.annotation.*;
-
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -16,7 +20,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author team01
- * @since 2024-07-07 06:15:11
+ * @since 2024-07-08 03:15:07
  */
 @Getter
 @Setter
@@ -35,7 +39,7 @@ public class Teacher implements Serializable {
     @TableField("bed_id")
     private Long bedId;
 
-    @ApiModelProperty("外键 关联到表role 维修管理员的角色 默认都是5 一般不会改变")
+    @ApiModelProperty("外键 关联到表role 教师的角色 默认都是5 一般不会改变")
     @TableField("role_id")
     private Integer roleId;
 
@@ -64,10 +68,10 @@ public class Teacher implements Serializable {
     private String major;
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private Date createTime;
+    private LocalDateTime createTime;
 
-    @TableField("update_time")
-    private Date updateTime;
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
     @TableField("is_deleted")
     @TableLogic

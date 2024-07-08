@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author team01
- * @since 2024-07-07 04:43:47
+ * @since 2024-07-08 03:17:30
  */
 @Mapper
 public interface SystemAdministratorMapper extends BaseMapper<SystemAdministrator> {

@@ -20,7 +20,7 @@ public class CodeGenerator {
                     builder.author("team01") // 设置作者名
                             .outputDir(System.getProperty("user.dir") + "/src/main/java")   //设置输出路径：项目的 java 目录下
                             .commentDate("yyyy-MM-dd hh:mm:ss")   // 注释日期
-                            .dateType(DateType.ONLY_DATE)   // 定义生成的实体类中日期的类型 TIME_PACK=LocalDateTime;ONLY_DATE=Date;
+                            .dateType(DateType.TIME_PACK)   // 定义生成的实体类中日期的类型 TIME_PACK=LocalDateTime;ONLY_DATE=Date;
                             .fileOverride()   // 覆盖之前的文件
                             .enableSwagger()   // 开启 swagger 模式
                             .disableOpenDir();   // 禁止打开输出目录，默认打开
@@ -40,7 +40,7 @@ public class CodeGenerator {
                 })
                 // 4、策略配置
                 .strategyConfig(builder -> {
-                    builder.addInclude("responsible_leader") // 设置需要生成的数据表名
+                    builder.addInclude("maintenance_administrator", "responsible_leader") // 设置需要生成的数据表名
 
                             // 4.1、Mapper策略配置
                             .mapperBuilder()
@@ -57,13 +57,13 @@ public class CodeGenerator {
                             .entityBuilder()
                             .enableLombok() // 开启 Lombok
                             // .disableSerialVersionUID()  // 不实现 Serializable 接口，不生产 SerialVersionUID
-                            .logicDeleteColumnName("deleted")   // 逻辑删除字段名
+                            .logicDeleteColumnName("is_deleted")   // 逻辑删除字段名
                             .naming(NamingStrategy.underline_to_camel)  // 数据库表映射到实体的命名策略：下划线转驼峰命
                             .columnNaming(NamingStrategy.underline_to_camel)    // 数据库表字段映射到实体的命名策略：下划线转驼峰命
                             .addTableFills(
                                     new Column("create_time", FieldFill.INSERT),
-                                    new Column("modify_time", FieldFill.INSERT_UPDATE)
-                            )   // 添加表字段填充，"create_time"字段自动填充为插入时间，"modify_time"字段自动填充为插入修改时间
+                                    new Column("update_time", FieldFill.INSERT_UPDATE)
+                            )   // 添加表字段填充，"create_time"字段自动填充为插入时间，"update_time"字段自动填充为插入修改时间
                             .enableTableFieldAnnotation()       // 开启生成实体时生成字段注解
                             .enableChainModel() // 启用lombok链式注解
 
