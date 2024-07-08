@@ -350,6 +350,7 @@ create table sanitary_inspection
 create table sanitary_inspection_record
 (
     id                   bigint auto_increment not null comment '主键',
+    room_id              bigint comment '外键 关联到表room 这条明细属于哪个寝室',
     sanitary_inspection_id bigint comment '外键 关联到表sanitary_inspection 这条明细属于哪次卫生检查',
     item                 varchar(10) comment '项 如床铺 桌面',
     score                float comment '具体项的得分，由item、score、以及寝室评分字典应该可以算出总分',
@@ -558,6 +559,9 @@ alter table sanitary_inspection add constraint FK_dormitory_administrator_sanita
 
 alter table sanitary_inspection_record add constraint FK_sanitary_inspection_sanitary_inspection_record foreign key (sanitary_inspection_id)
     references sanitary_inspection (id) on delete restrict on update restrict;
+
+alter table sanitary_inspection_record add constraint  FK_room_sanitary_inspection_record foreign key (room_id)
+    references room (id) on delete restrict on update restrict;
 
 alter table sanitation_objection add constraint FK_student_sanitation_objection foreign key (student_id)
     references student (id) on delete restrict on update restrict;
