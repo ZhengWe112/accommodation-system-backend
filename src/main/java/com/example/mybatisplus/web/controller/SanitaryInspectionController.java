@@ -8,7 +8,7 @@ import com.example.mybatisplus.service.SanitaryInspectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -42,9 +42,25 @@ public class SanitaryInspectionController {
     public JsonResponse<String> add(@PathVariable Long id) {
         SanitaryInspection sanitaryInspection = new SanitaryInspection();
 
-        // sanitaryInspection.setInspectionTime()
-        // sanitaryInspectionService.save()
-        return null;
+        sanitaryInspection.setInspectionTime(LocalDate.now())
+                .setDormitoryAdministratorId(id).setState(0).setAverageScore(0f).setOverallSituation(3);
+
+        sanitaryInspectionService.save(sanitaryInspection);
+        return JsonResponse.success("创建成功");
+    }
+
+    @DeleteMapping("{id}")
+    public JsonResponse<String> deleteById(@PathVariable Long id) {
+        sanitaryInspectionService.removeById(id);
+        return JsonResponse.success("删除成功");
+    }
+
+    @GetMapping("/submit")
+    public JsonResponse<String> submit(Long id) {
+        SanitaryInspection sanitaryInspection = sanitaryInspectionService.getById(id);
+        sanitaryInspection.setState(1); // state == 1表示已送审
+        sanitaryInspectionService.updateById(sanitaryInspection);
+        return JsonResponse.success("送审成功");
     }
 }
 

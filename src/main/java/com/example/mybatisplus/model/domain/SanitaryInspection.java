@@ -3,7 +3,9 @@ package com.example.mybatisplus.model.domain;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -37,7 +39,7 @@ public class SanitaryInspection implements Serializable {
 
     @ApiModelProperty("检查时间")
     @TableField("inspection_time")
-    private Date inspectionTime;
+    private LocalDate inspectionTime;
 
     @ApiModelProperty("整体情况 0优 1良 2中 3差")
     @TableField("overall_situation")
@@ -52,10 +54,10 @@ public class SanitaryInspection implements Serializable {
     private Integer state;
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private Date createTime;
+    private LocalDateTime createTime;
 
-    @TableField("update_time")
-    private Date updateTime;
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
     @TableField("is_deleted")
     @TableLogic

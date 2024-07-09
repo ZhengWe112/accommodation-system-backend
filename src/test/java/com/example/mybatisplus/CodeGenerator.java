@@ -40,7 +40,7 @@ public class CodeGenerator {
                 })
                 // 4、策略配置
                 .strategyConfig(builder -> {
-                    builder.addInclude("maintenance_administrator", "responsible_leader") // 设置需要生成的数据表名
+                    builder.addInclude("sanitary_inspection_record") // 设置需要生成的数据表名
 
                             // 4.1、Mapper策略配置
                             .mapperBuilder()
