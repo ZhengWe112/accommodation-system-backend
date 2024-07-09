@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mybatisplus.mapper.SanitaryInspectionMapper">
-
+    <resultMap id="DormSanitaryInspectionLog" type="com.example.mybatisplus.model.domain.DormSanitaryInspectionLog">
+        <result property="roomId" column="room_id"/>
+        <result property="score" column="score"/>
+    </resultMap>
+    <select id="countScore" resultMap="DormSanitaryInspectionLog">
+        select sum(s.score * d.proportion) as score, s.room_id as room_id
+        from dormitory_rating_dictionary as d
+            left join sanitary_inspection_record as s on d.item = s.item
+            where s.is_deleted = 0 group by s.room_id;
+    </select>
 </mapper>

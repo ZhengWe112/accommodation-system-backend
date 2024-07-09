@@ -37,6 +37,9 @@ public class SanitaryInspection implements Serializable {
     @TableField("dormitory_administrator_id")
     private Long dormitoryAdministratorId;
 
+    @TableField(exist = false)
+    private String dormitoryAdministratorName;
+
     @ApiModelProperty("检查时间")
     @TableField("inspection_time")
     private LocalDate inspectionTime;
