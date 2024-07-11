@@ -368,9 +368,10 @@ create table sanitation_objection
 (
     id                   bigint auto_increment not null comment '主键',
     student_id           bigint comment '外键 关联到表student 哪个学生发起的',
+    sanitary_inspection_id bigint comment '外键 关联到表sanitary_inspection 对哪次的异议',
     objection_reason     varchar(80) comment '发起的理由',
     room_number          char(4) comment '发起人的房间号 房间号固定为4为数字 为2位楼栋编号+2位数字',
-    state                smallint default 0 comment '状态 0未送审分管领导 1已送审分管领导 2已经审核完成 发送了反馈',
+    state                smallint default 0 comment '状态 0已保存 仅学生自己可以看到 1未送审分管领导 2已送审分管领导 3已经审核完成 同意 4已经审核完成 拒绝',
     create_time          datetime default current_timestamp,
     update_time          datetime default current_timestamp on update current_timestamp,
     is_deleted           bool default 0,
@@ -385,7 +386,7 @@ create table sanitation_objection_review_result_notification
     id                   bigint auto_increment not null comment '主键',
     dormitory_administrator_id bigint comment '外键 关联到表dormitory_administrator 发给哪个宿管的',
     description          varchar(40) comment '描述 比如把xxx寝室的xxx项改为xxx分',
-    state                bool comment '0表示这次异议被通过了 1表示这次异议不予通过',
+    state                smallint comment '0表示这次异议被通过了 1表示这次异议不予通过 2表示通过的异议已经被执行',
     create_time          datetime default current_timestamp,
     update_time          datetime default current_timestamp on update current_timestamp,
     is_deleted           bool default 0,
@@ -565,6 +566,9 @@ alter table sanitary_inspection_record add constraint  FK_room_sanitary_inspecti
 
 alter table sanitation_objection add constraint FK_student_sanitation_objection foreign key (student_id)
     references student (id) on delete restrict on update restrict;
+
+alter table sanitation_objection add constraint FK_sanitary_inspection_sanitation_objection foreign key (sanitary_inspection_id)
+    references sanitary_inspection (id) on delete restrict on update restrict;
 
 alter table sanitation_objection_review_result_notification add constraint FK_sanitation_objection_review_result_notification foreign key (dormitory_administrator_id)
     references dormitory_administrator (id) on delete restrict on update restrict;

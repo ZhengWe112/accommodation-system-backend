@@ -4,6 +4,7 @@ package com.example.mybatisplus.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.mybatisplus.common.JsonResponse;
 import com.example.mybatisplus.model.domain.SanitaryInspectionRecord;
+import com.example.mybatisplus.service.DormSanitaryInspectionLogService;
 import com.example.mybatisplus.service.SanitaryInspectionRecordService;
 import com.example.mybatisplus.service.SanitaryInspectionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class SanitaryInspectionRecordController {
     @Autowired
     private SanitaryInspectionService sanitaryInspectionService;
 
+    @Autowired
+    private DormSanitaryInspectionLogService dormSanitaryInspectionLogService;
+
     @GetMapping("/list")
     public JsonResponse<List<SanitaryInspectionRecord>> listBySanitaryInspectionId(Long id) {
         LambdaQueryWrapper<SanitaryInspectionRecord> wrapper = new LambdaQueryWrapper<>();
@@ -43,6 +47,7 @@ public class SanitaryInspectionRecordController {
 
         // 修改分数后 总分也要修改
         sanitaryInspectionService.updateScore(record.getSanitaryInspectionId());
+        dormSanitaryInspectionLogService.updateScore(record.getSanitaryInspectionId());
         return JsonResponse.success("修改成功");
     }
 
@@ -50,6 +55,7 @@ public class SanitaryInspectionRecordController {
     public JsonResponse<String> addOne(@RequestBody SanitaryInspectionRecord record) {
         sanitaryInspectionRecordService.save(record);
         sanitaryInspectionService.updateScore(record.getSanitaryInspectionId());
+        dormSanitaryInspectionLogService.updateScore(record.getSanitaryInspectionId());
         return JsonResponse.success("添加成功");
     }
 
@@ -57,6 +63,7 @@ public class SanitaryInspectionRecordController {
     public JsonResponse<String> deleteById(Long id, Long sanitaryInspectionId) {
         sanitaryInspectionRecordService.removeById(id);
         sanitaryInspectionService.updateScore(sanitaryInspectionId);
+        dormSanitaryInspectionLogService.updateScore(sanitaryInspectionId);
         return JsonResponse.success("删除成功");
     }
 }

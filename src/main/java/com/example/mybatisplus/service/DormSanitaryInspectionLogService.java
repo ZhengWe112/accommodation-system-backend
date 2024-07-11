@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface DormSanitaryInspectionLogService extends IService<DormSanitaryInspectionLog> {
 
     void countScore(Long id);
+
+    void updateScore(Long sanitaryInspectionId);
 }

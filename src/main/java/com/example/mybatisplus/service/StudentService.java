@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface StudentService extends IService<Student> {
 
+    // 获取某位学生的房间号
+    Long getRoomId(Long studentId);
 }

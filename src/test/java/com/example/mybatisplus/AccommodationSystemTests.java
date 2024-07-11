@@ -1,23 +1,20 @@
 package com.example.mybatisplus;
 
-import com.example.mybatisplus.mapper.SanitaryInspectionMapper;
-import com.example.mybatisplus.model.domain.DormSanitaryInspectionLog;
+import com.example.mybatisplus.service.DormSanitaryInspectionLogService;
+import com.example.mybatisplus.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 @SpringBootTest
 class AccommodationSystemTests {
 
     @Autowired
-    SanitaryInspectionMapper sanitaryInspectionMapper;
+    private StudentService studentService;
 
     @Test
     void contextLoads() {
-        List<DormSanitaryInspectionLog> logs = sanitaryInspectionMapper.countScore(1L);
-        System.out.println(logs);
+
     }
 
 }

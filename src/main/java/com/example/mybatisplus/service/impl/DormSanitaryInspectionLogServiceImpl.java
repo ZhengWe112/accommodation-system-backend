@@ -1,5 +1,6 @@
 package com.example.mybatisplus.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.example.mybatisplus.mapper.SanitaryInspectionMapper;
 import com.example.mybatisplus.model.domain.DormSanitaryInspectionLog;
 import com.example.mybatisplus.mapper.DormSanitaryInspectionLogMapper;
@@ -32,5 +33,20 @@ public class DormSanitaryInspectionLogServiceImpl extends ServiceImpl<DormSanita
         logs = logs.stream().map(log -> log.setSanitaryInspectionId(id)).collect(Collectors.toList());
 
         this.saveBatch(logs);
+    }
+
+    @Override
+    public void updateScore(Long id) {
+        List<DormSanitaryInspectionLog> logs = sanitaryInspectionMapper.countScore(id);
+
+        logs = logs.stream().map(log -> log.setSanitaryInspectionId(id)).collect(Collectors.toList());
+
+        logs.forEach(log -> {
+            LambdaUpdateWrapper<DormSanitaryInspectionLog> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.eq(DormSanitaryInspectionLog::getRoomId, log.getRoomId())
+                    .eq(DormSanitaryInspectionLog::getSanitaryInspectionId, id)
+                    .set(DormSanitaryInspectionLog::getScore, log.getScore());
+            this.update(log, wrapper);
+        });
     }
 }

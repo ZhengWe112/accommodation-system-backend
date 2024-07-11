@@ -8,8 +8,6 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -18,18 +16,18 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 宿舍卫生检查日志表
+ * 房间表
  * </p>
  *
  * @author team01
- * @since 2024-07-09 09:20:04
+ * @since 2024-07-11 03:26:17
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("dorm_sanitary_inspection_log")
-@ApiModel(value = "DormSanitaryInspectionLog对象", description = "宿舍卫生检查日志表")
-public class DormSanitaryInspectionLog implements Serializable {
+@TableName("room")
+@ApiModel(value = "Room对象", description = "房间表")
+public class Room implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,20 +35,25 @@ public class DormSanitaryInspectionLog implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty("外键 关联到表room 这条日志是哪个寝室的")
-    @TableField("room_id")
-    private Long roomId;
+    @ApiModelProperty("外键 关联到表building 房间属于哪栋楼")
+    @TableField("building_id")
+    private Long buildingId;
 
-    @ApiModelProperty("外键 关联到表inspection_id 哪次卫生检查")
-    @TableField("sanitary_inspection_id")
-    private Long sanitaryInspectionId;
+    @ApiModelProperty("房间号固定为4为数字 为2位楼栋编号+2位数字")
+    @TableField("room_number")
+    private String roomNumber;
 
-    @ApiModelProperty("成绩")
-    @TableField("score")
-    private Float score;
+    @ApiModelProperty("房间类型 0寝室 1辅导员室 2门卫室 3办公室 4储藏室 5洗手间 6洗室 7服务台 8服务间")
+    @TableField("room_type")
+    private Integer roomType;
 
-    @TableField(exist = false)
-    private List<SanitaryInspectionRecord> sanitaryInspectionDetail;
+    @ApiModelProperty("房间所在的楼层 在几楼")
+    @TableField("room_floor")
+    private Integer roomFloor;
+
+    @ApiModelProperty("房间在左手边还是右手边")
+    @TableField("room_location")
+    private Boolean roomLocation;
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;

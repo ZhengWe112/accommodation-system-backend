@@ -8,8 +8,6 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -18,18 +16,18 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 宿舍卫生检查日志表
+ * 卫生异议审核结果通知表 这是分管领导发给宿管的通知 表示这次异议给不给过 若过了宿管要修改相应的得分
  * </p>
  *
  * @author team01
- * @since 2024-07-09 09:20:04
+ * @since 2024-07-11 03:38:35
  */
 @Getter
 @Setter
 @Accessors(chain = true)
-@TableName("dorm_sanitary_inspection_log")
-@ApiModel(value = "DormSanitaryInspectionLog对象", description = "宿舍卫生检查日志表")
-public class DormSanitaryInspectionLog implements Serializable {
+@TableName("sanitation_objection_review_result_notification")
+@ApiModel(value = "SanitationObjectionReviewResultNotification对象", description = "卫生异议审核结果通知表 这是分管领导发给宿管的通知 表示这次异议给不给过 若过了宿管要修改相应的得分")
+public class SanitationObjectionReviewResultNotification implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,20 +35,17 @@ public class DormSanitaryInspectionLog implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty("外键 关联到表room 这条日志是哪个寝室的")
-    @TableField("room_id")
-    private Long roomId;
+    @ApiModelProperty("外键 关联到表dormitory_administrator 发给哪个宿管的")
+    @TableField("dormitory_administrator_id")
+    private Long dormitoryAdministratorId;
 
-    @ApiModelProperty("外键 关联到表inspection_id 哪次卫生检查")
-    @TableField("sanitary_inspection_id")
-    private Long sanitaryInspectionId;
+    @ApiModelProperty("描述 比如把xxx寝室的xxx项改为xxx分")
+    @TableField("description")
+    private String description;
 
-    @ApiModelProperty("成绩")
-    @TableField("score")
-    private Float score;
-
-    @TableField(exist = false)
-    private List<SanitaryInspectionRecord> sanitaryInspectionDetail;
+    @ApiModelProperty("0表示这次异议被通过了 1表示这次异议不予通过 2表示通过的异议已经被执行")
+    @TableField("state")
+    private Integer state;
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
