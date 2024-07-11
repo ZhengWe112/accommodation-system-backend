@@ -40,7 +40,7 @@ public class CodeGenerator {
                 })
                 // 4、策略配置
                 .strategyConfig(builder -> {
-                    builder.addInclude("sanitation_objection_review_result_notification") // 设置需要生成的数据表名
+                    builder.addInclude("violation_warning") // 设置需要生成的数据表名
 
                             // 4.1、Mapper策略配置
                             .mapperBuilder()
