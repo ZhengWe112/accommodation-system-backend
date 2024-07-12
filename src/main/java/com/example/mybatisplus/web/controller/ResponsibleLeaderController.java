@@ -38,7 +38,7 @@ public class ResponsibleLeaderController {
     // 需求：审核由分管领导执行，审核结束后需要将申请状态返回给学生，分管领导可以通过或者驳回申请，申请状态变为“通过”或者“驳回”。
     // 对应到表中state:申请状态 0表示等待审核 1表示审核通过 2表示被驳回
     @PostMapping("/accommodationApplication")
-    public JsonResponse<String> reviewAccommodationApplication(@RequestBody AccommodationLog accommodationLog) {
+    public JsonResponse<String> review(@RequestBody AccommodationLog accommodationLog) {
         // 方法名中 review => "审查"
         // 注意:参数使用的是AccommodationLog作为requestBody,前端请求时要将数据封装成为AccommodationLog
         // 只需在AccommodationApplication的JSON中添加字段responsibleLeaderId、reviewTime、reviewState、reviewReason(null)即可，
@@ -55,7 +55,6 @@ public class ResponsibleLeaderController {
         // AccommodationApplication中 申请状态 0表示等待审核 1表示审核通过 2表示被驳回
         // AccommodationLog中 申请是通过还是驳回 0通过 1驳回
         accommodationApplication.setState(accommodationLog.getReviewState()?2:1);
-        // 更新住退宿申请
         boolean updatedFlag = accommodationApplicationService.updateById(accommodationApplication);
         if (updatedFlag) {
             // 住退宿申请更新完后，新增log
@@ -76,7 +75,7 @@ public class ResponsibleLeaderController {
     public JsonResponse list(@PathVariable Long id,
                              @RequestParam(defaultValue = "1") int pageNo,
                              @RequestParam(defaultValue = "10") int pageSize){
-        // 调用AccommodationLogController的分页查找方法，获取给定id分管领导的所有申请
+        // 分页查找方法，获取给定id分管领导的所有申请
         LambdaQueryWrapper<AccommodationLog> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(AccommodationLog::getResponsibleLeaderId, id);
         Page<AccommodationLog> pageInfo = new Page<>(pageNo, pageSize);

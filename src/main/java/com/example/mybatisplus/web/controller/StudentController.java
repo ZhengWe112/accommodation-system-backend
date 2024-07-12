@@ -4,13 +4,12 @@ package com.example.mybatisplus.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
-import com.example.mybatisplus.model.domain.AccommodationApplication;
-import com.example.mybatisplus.model.domain.AccommodationLog;
-import com.example.mybatisplus.model.domain.Park;
-import com.example.mybatisplus.model.domain.SanitationObjectionReviewResultNotification;
+import com.example.mybatisplus.model.domain.*;
 import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.AccommodationApplicationService;
 import com.example.mybatisplus.service.AccommodationLogService;
+import com.example.mybatisplus.service.MaintenanceRecordService;
+import com.example.mybatisplus.service.MaintenanceRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,11 +36,12 @@ public class StudentController {
     private AccommodationApplicationService accommodationApplicationService;
 
     @Autowired
-    private AccommodationLogService accommodationLogService;
+    private MaintenanceRequestService maintenanceRequestService;
 
+
+    // 需求：表单填写完成并提交后，申请状态会变为“正在审核”
     @PostMapping("/accommodationApplication")
-    public JsonResponse<String> accommodationApplication(@RequestBody AccommodationApplication accommodationApplication) {
-        // 需求：表单填写完成并提交后，申请状态会变为“正在审核”
+    public JsonResponse<String> apply(@RequestBody AccommodationApplication accommodationApplication) {
         // 对应到表中state:申请状态 0表示等待审核 1表示审核通过 2表示被驳回
 //        accommodationApplication.setState(0);// 应该在前端封装
         boolean addedFlag = accommodationApplicationService.save(accommodationApplication); // save方法添加住退宿申请
@@ -53,14 +53,38 @@ public class StudentController {
     }
 
     @GetMapping("/accommodationApplication/{id}")
-    public JsonResponse list(@PathVariable Long id,
+    public JsonResponse listAccommodationApplication(@PathVariable Long id,
                              @RequestParam(defaultValue = "1") int pageNo,
                              @RequestParam(defaultValue = "10") int pageSize){
         // 分页查找方法，获取给定id学生的所有申请
-        LambdaQueryWrapper<AccommodationLog> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(AccommodationLog::getStudentId, id);
-        Page<AccommodationLog> pageInfo = new Page<>(pageNo, pageSize);
-        Page<AccommodationLog> page = accommodationLogService.page(pageInfo, wrapper);
+        LambdaQueryWrapper<AccommodationApplication> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AccommodationApplication::getStudentId, id);
+        Page<AccommodationApplication> pageInfo = new Page<>(pageNo, pageSize);
+        Page<AccommodationApplication> page = accommodationApplicationService.page(pageInfo, wrapper);
+
+        return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
+    }
+
+    // 需求：学生登记维修信息，提出维修申请，维修管理员可以收到维修通知。
+    @PostMapping("/maintenance")
+    public JsonResponse<String> request(@RequestBody MaintenanceRequest maintenanceRequest) {
+        boolean addedFlag = maintenanceRequestService.save(maintenanceRequest); // save方法添加维修申请
+        if (addedFlag) {
+            return JsonResponse.success("维修申请成功。");
+        } else {
+            return JsonResponse.failure("维修申请失败。");
+        }
+    }
+
+    @GetMapping("/maintenance/{id}")
+    public JsonResponse listMaintenance(@PathVariable Long id,
+                             @RequestParam(defaultValue = "1") int pageNo,
+                             @RequestParam(defaultValue = "10") int pageSize){
+        // 分页查找方法，获取给定id学生的所有申请
+        LambdaQueryWrapper<MaintenanceRequest> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MaintenanceRequest::getStudentId, id);
+        Page<MaintenanceRequest> pageInfo = new Page<>(pageNo, pageSize);
+        Page<MaintenanceRequest> page = maintenanceRequestService.page(pageInfo, wrapper);
 
         return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
     }

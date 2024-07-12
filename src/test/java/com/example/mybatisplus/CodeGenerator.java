@@ -40,7 +40,7 @@ public class CodeGenerator {
                 })
                 // 4、策略配置
                 .strategyConfig(builder -> {
-                    builder.addInclude("accommodation_notification") // 设置需要生成的数据表名
+                    builder.addInclude("maintenance_request") // 设置需要生成的数据表名
 
                             // 4.1、Mapper策略配置
                             .mapperBuilder()
