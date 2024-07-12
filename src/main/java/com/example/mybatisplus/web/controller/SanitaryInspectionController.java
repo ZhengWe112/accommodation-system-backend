@@ -2,9 +2,11 @@ package com.example.mybatisplus.web.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
 import com.example.mybatisplus.model.domain.DormitoryAdministrator;
 import com.example.mybatisplus.model.domain.SanitaryInspection;
+import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.DormSanitaryInspectionLogService;
 import com.example.mybatisplus.service.DormitoryAdministratorService;
 import com.example.mybatisplus.service.SanitaryInspectionService;
@@ -42,10 +44,15 @@ public class SanitaryInspectionController {
     }
 
     @GetMapping("{id}")
-    public JsonResponse<List<SanitaryInspection>> getByDormAdminId(@PathVariable Long id) {
+    public JsonResponse getByDormAdminId(@PathVariable Long id, int pageNo, int pageSize) {
         LambdaQueryWrapper<SanitaryInspection> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SanitaryInspection::getDormitoryAdministratorId, id);
-        return JsonResponse.success(sanitaryInspectionService.list(wrapper));
+
+        Page<SanitaryInspection> pageInfo = new Page<>(pageNo, pageSize);
+
+        Page<SanitaryInspection> inspectionPage = sanitaryInspectionService.page(pageInfo, wrapper);
+
+        return JsonResponse.success(new PageResponseDTO<>(inspectionPage.getRecords(), inspectionPage.getTotal()));
     }
 
     @PutMapping("{id}")
@@ -74,19 +81,22 @@ public class SanitaryInspectionController {
     }
 
     @GetMapping("/submitted")
-    public JsonResponse<List<SanitaryInspection>> getSubmitted() {
+    public JsonResponse getSubmitted(int pageNo, int pageSize) {
         LambdaQueryWrapper<SanitaryInspection> wrapper = new LambdaQueryWrapper<>();
 
         // state = 1表示已送审
         wrapper.in(SanitaryInspection::getState, 1, 2);
-        List<SanitaryInspection> sanitaryInspections = sanitaryInspectionService.list(wrapper);
 
-        sanitaryInspections= sanitaryInspections.stream().peek(item -> {
+        Page<SanitaryInspection> pageInfo = new Page<>(pageNo, pageSize);
+
+        Page<SanitaryInspection> inspectionPage = sanitaryInspectionService.page(pageInfo, wrapper);
+
+        List<SanitaryInspection> inspections = inspectionPage.getRecords().stream().peek(item -> {
             DormitoryAdministrator dormitoryAdministrator = dormitoryAdministratorService.getById(item.getDormitoryAdministratorId());
             item.setDormitoryAdministratorName(dormitoryAdministrator.getFullname());
-        }).collect(Collectors.toList());
+        }).toList();
 
-        return JsonResponse.success(sanitaryInspections);
+        return JsonResponse.success(new PageResponseDTO<>(inspections, inspectionPage.getTotal()));
     }
 
     @GetMapping("/pub")
