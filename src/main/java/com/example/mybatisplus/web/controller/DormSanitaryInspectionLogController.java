@@ -2,10 +2,12 @@ package com.example.mybatisplus.web.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
 import com.example.mybatisplus.model.domain.DormSanitaryInspectionLog;
 import com.example.mybatisplus.model.domain.SanitaryInspection;
 import com.example.mybatisplus.model.domain.SanitaryInspectionRecord;
+import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.DormSanitaryInspectionLogService;
 import com.example.mybatisplus.service.SanitaryInspectionRecordService;
 import com.example.mybatisplus.service.SanitaryInspectionService;
@@ -44,7 +46,7 @@ public class DormSanitaryInspectionLogController {
     private StudentService studentService;
 
     @GetMapping("/list")
-    public JsonResponse<List<DormSanitaryInspectionLog>> list(Long dormAdminId, Long studentId) {
+    public JsonResponse list(Integer pageNo, Integer pageSize, Long dormAdminId, Long studentId) {
         LambdaQueryWrapper<DormSanitaryInspectionLog> wrapper = new LambdaQueryWrapper<>();
 
         if (dormAdminId != null) {
@@ -60,15 +62,19 @@ public class DormSanitaryInspectionLogController {
             wrapper.eq(DormSanitaryInspectionLog::getRoomId, roomId);
         }
 
-        List<DormSanitaryInspectionLog> logs = dormSanitaryInspectionLogService.list(wrapper);
-        logs = logs.stream().map(log -> {
+        Page<DormSanitaryInspectionLog> pageInfo = new Page<>(pageNo, pageSize);
+
+        Page<DormSanitaryInspectionLog> logPage = dormSanitaryInspectionLogService.page(pageInfo, wrapper);
+
+        List<DormSanitaryInspectionLog> logs = logPage.getRecords().stream().map(log -> {
             LambdaQueryWrapper<SanitaryInspectionRecord> recordWrapper = new LambdaQueryWrapper<>();
             recordWrapper.eq(SanitaryInspectionRecord::getSanitaryInspectionId, log.getSanitaryInspectionId())
                     .eq(SanitaryInspectionRecord::getRoomId, log.getRoomId());
             List<SanitaryInspectionRecord> inspectionRecords = sanitaryInspectionRecordService.list(recordWrapper);
             return log.setSanitaryInspectionDetail(inspectionRecords);
         }).collect(Collectors.toList());
-        return JsonResponse.success(logs);
+
+        return JsonResponse.success(new PageResponseDTO<>(logs, logPage.getTotal()));
     }
 }
 

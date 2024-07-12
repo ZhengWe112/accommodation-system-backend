@@ -2,11 +2,13 @@ package com.example.mybatisplus.web.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
 import com.example.mybatisplus.common.utls.SessionUtils;
 import com.example.mybatisplus.model.domain.Student;
 import com.example.mybatisplus.model.domain.ViolationRecord;
 import com.example.mybatisplus.model.domain.ViolationWarning;
+import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.StudentService;
 import com.example.mybatisplus.service.ViolationRecordService;
 import com.example.mybatisplus.service.ViolationWarningService;
@@ -37,11 +39,15 @@ public class ViolationRecordController {
     private ViolationWarningService violationWarningService;
 
     @GetMapping("byDormAdmin")
-    public JsonResponse<List<ViolationRecord>> getByDorm(Long id) {
+    public JsonResponse getByDorm(Long id, int pageNo, int pageSize) {
         LambdaQueryWrapper<ViolationRecord> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ViolationRecord::getDormitoryAdministratorId, id);
-        List<ViolationRecord> records = violationRecordService.listWithStudent(wrapper);
-        return JsonResponse.success(records);
+
+        Page<ViolationRecord> pageInfo = new Page<>(pageNo, pageSize);
+
+        Page<ViolationRecord> recordPage = violationRecordService.page(pageInfo, wrapper);
+
+        return JsonResponse.success(new PageResponseDTO<>(recordPage.getRecords(), recordPage.getTotal()));
     }
 
     @PostMapping("/add")
@@ -76,11 +82,15 @@ public class ViolationRecordController {
     }
 
     @GetMapping("byState")
-    public JsonResponse<List<ViolationRecord>> getByState() {
+    public JsonResponse getByState(int pageNo, int pageSize) {
         LambdaQueryWrapper<ViolationRecord> wrapper = new LambdaQueryWrapper<>();
         wrapper.ge(ViolationRecord::getState, 1);
-        List<ViolationRecord> records = violationRecordService.listWithStudent(wrapper);
-        return JsonResponse.success(records);
+
+        Page<ViolationRecord> pageInfo = new Page<>(pageNo, pageSize);
+
+        Page<ViolationRecord> page = violationRecordService.page(pageInfo, wrapper);
+
+        return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
     }
 
     @GetMapping("send")

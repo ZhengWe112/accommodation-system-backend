@@ -2,17 +2,17 @@ package com.example.mybatisplus.web.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
 import com.example.mybatisplus.model.domain.Room;
 import com.example.mybatisplus.model.domain.SanitationObjection;
+import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.RoomService;
 import com.example.mybatisplus.service.SanitationObjectionReviewResultNotificationService;
 import com.example.mybatisplus.service.SanitationObjectionService;
 import com.example.mybatisplus.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * <p>
@@ -39,7 +39,7 @@ public class SanitationObjectionController {
     private RoomService roomService;
 
     @GetMapping("/list")
-    public JsonResponse<List<SanitationObjection>> list(Integer state, Long studentId) {
+    public JsonResponse list(int pageNo, int pageSize, Integer state, Long studentId) {
         LambdaQueryWrapper<SanitationObjection> wrapper = new LambdaQueryWrapper<>();
         if (state != null) {
             wrapper.ge(SanitationObjection::getState, state);
@@ -49,8 +49,11 @@ public class SanitationObjectionController {
             wrapper.eq(SanitationObjection::getStudentId, studentId);
         }
 
-        List<SanitationObjection> objections = sanitationObjectionService.list(wrapper);
-        return JsonResponse.success(objections);
+        Page<SanitationObjection> pageInfo = new Page<>(pageNo, pageSize);
+
+        Page<SanitationObjection> objectionPage = sanitationObjectionService.page(pageInfo, wrapper);
+
+        return JsonResponse.success(new PageResponseDTO<>(objectionPage.getRecords(), objectionPage.getTotal()));
     }
 
     @PostMapping("/add")

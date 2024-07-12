@@ -39,6 +39,9 @@ public class SanitaryInspectionRecord implements Serializable {
     @TableField("room_id")
     private Long roomId;
 
+    @TableField(exist = false)
+    private String roomNumber;
+
     @ApiModelProperty("外键 关联到表sanitary_inspection 这条明细属于哪次卫生检查")
     @TableField("sanitary_inspection_id")
     private Long sanitaryInspectionId;

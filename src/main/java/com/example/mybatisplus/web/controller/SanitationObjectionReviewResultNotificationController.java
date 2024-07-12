@@ -2,8 +2,10 @@ package com.example.mybatisplus.web.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
 import com.example.mybatisplus.model.domain.SanitationObjectionReviewResultNotification;
+import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.SanitationObjectionReviewResultNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * <p>
@@ -30,11 +30,14 @@ public class SanitationObjectionReviewResultNotificationController {
     private SanitationObjectionReviewResultNotificationService sanitationObjectionReviewResultNotificationService;
 
     @GetMapping("{id}")
-    public JsonResponse<List<SanitationObjectionReviewResultNotification>> list(@PathVariable Long id) {
+    public JsonResponse list(@PathVariable Long id, int pageNo, int pageSize) {
         LambdaQueryWrapper<SanitationObjectionReviewResultNotification> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SanitationObjectionReviewResultNotification::getDormitoryAdministratorId, id);
-        List<SanitationObjectionReviewResultNotification> notifications = sanitationObjectionReviewResultNotificationService.list(wrapper);
-        return JsonResponse.success(notifications);
+
+        Page<SanitationObjectionReviewResultNotification> pageInfo = new Page<>(pageNo, pageSize);
+        Page<SanitationObjectionReviewResultNotification> page = sanitationObjectionReviewResultNotificationService.page(pageInfo, wrapper);
+
+        return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
     }
 
     @GetMapping("/process")

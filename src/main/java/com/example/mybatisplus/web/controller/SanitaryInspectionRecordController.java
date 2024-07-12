@@ -2,15 +2,20 @@ package com.example.mybatisplus.web.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
+import com.example.mybatisplus.model.domain.Room;
 import com.example.mybatisplus.model.domain.SanitaryInspectionRecord;
+import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.DormSanitaryInspectionLogService;
+import com.example.mybatisplus.service.RoomService;
 import com.example.mybatisplus.service.SanitaryInspectionRecordService;
 import com.example.mybatisplus.service.SanitaryInspectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -33,12 +38,25 @@ public class SanitaryInspectionRecordController {
     @Autowired
     private DormSanitaryInspectionLogService dormSanitaryInspectionLogService;
 
+    @Autowired
+    private RoomService roomService;
+
     @GetMapping("/list")
-    public JsonResponse<List<SanitaryInspectionRecord>> listBySanitaryInspectionId(Long id) {
+    public JsonResponse listBySanitaryInspectionId(Long id, int pageNo, int pageSize) {
         LambdaQueryWrapper<SanitaryInspectionRecord> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SanitaryInspectionRecord::getSanitaryInspectionId, id);
-        List<SanitaryInspectionRecord> records = sanitaryInspectionRecordService.list(wrapper);
-        return JsonResponse.success(records);
+
+        Page<SanitaryInspectionRecord> pageInfo = new Page<>(pageNo, pageSize);
+
+        Page<SanitaryInspectionRecord> recordPage = sanitaryInspectionRecordService.page(pageInfo, wrapper);
+
+        List<SanitaryInspectionRecord> records = recordPage.getRecords();
+
+        records = records.stream().map(record -> {
+            Room room = roomService.getById(record.getRoomId());
+            return record.setRoomNumber(room.getRoomNumber());
+        }).collect(Collectors.toList());
+        return JsonResponse.success(new PageResponseDTO<>(records, recordPage.getTotal()));
     }
 
     @PostMapping("/update")
