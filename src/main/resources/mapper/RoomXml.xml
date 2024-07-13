@@ -2,4 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mybatisplus.mapper.RoomMapper">
 
+    <resultMap id="BaseResultMap" type="com.example.mybatisplus.model.domain.Room">
+        <id column="room_id" property="roomId" />
+        <result column="total_num" property="totalNum" />
+        <result column="campus_name" property="campusName" />
+        <result column="building_name" property="buildingName" />
+        <result column="floor_id" property="floorId" />
+        <result column="is_deleted" property="deleted" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
 </mapper>

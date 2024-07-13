@@ -2,4 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mybatisplus.mapper.BedMapper">
 
+    <resultMap id="BaseResultMap" type="com.example.mybatisplus.model.domain.Bed">
+        <id column="id" property="id" />
+        <result column="room_id" property="roomId" />
+        <result column="bed_number" property="bedNumber" />
+        <result column="stu_id" property="stuId" />
+        <result column="is_deleted" property="deleted" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <resultMap id="BedWithRoom" type="com.example.mybatisplus.model.domain.Bed">
+        <id column="id" property="id" />
+        <result column="room_id" property="roomId" />
+        <result column="bed_number" property="bedNumber" />
+        <result column="stu_id" property="stuId" />
+        <association property="room" javaType="com.example.mybatisplus.model.domain.Room">
+            <id column="room_id" property="roomId" />
+            <result column="total_num" property="totalNum" />
+            <result column="campus_name" property="campusName" />
+            <result column="building_name" property="buildingName" />
+            <result column="floor_id" property="floorId" />
+        </association>
+    </resultMap>
+    <select id="selectByNbWithRoom" resultMap="BedWithRoom">
+        SELECT * FROM bed LEFT JOIN room on room.`room_id` = bed.room_id
+        where bed.stu_id = #{number}
+    </select>
 </mapper>
