@@ -10,6 +10,7 @@ import com.example.mybatisplus.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,9 @@ public class StudentController {
     @Autowired
     private BedService bedService;
 
+    @Autowired
+    private RoomService roomService;
+
 
     // 需求：表单填写完成并提交后，申请状态会变为“正在审核”
     @PostMapping("/accommodationApplication")
@@ -74,6 +78,11 @@ public class StudentController {
     // 需求：学生登记维修信息，提出维修申请，维修管理员可以收到维修通知。
     @PostMapping("/maintenance")
     public JsonResponse<String> request(@RequestBody MaintenanceRequest maintenanceRequest) {
+        maintenanceRequest.setRequestTime(LocalDateTime.now()).setState(0);
+        Long roomId = studentService.getRoomId(maintenanceRequest.getStudentId());
+        Room room = roomService.getById(roomId);
+        maintenanceRequest.setRoomNumber(room.getRoomNumber());
+
         boolean addedFlag = maintenanceRequestService.save(maintenanceRequest); // save方法添加维修申请
         if (addedFlag) {
             return JsonResponse.success("维修申请成功。");
