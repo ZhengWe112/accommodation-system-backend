@@ -72,7 +72,7 @@ public class ResponsibleLeaderController {
     }
 
     @GetMapping("/accommodationApplication/{id}")
-    public JsonResponse list(@PathVariable Long id,
+    public JsonResponse listById(@PathVariable Long id,
                              @RequestParam(defaultValue = "1") int pageNo,
                              @RequestParam(defaultValue = "10") int pageSize){
         // 分页查找方法，获取给定id分管领导的所有申请

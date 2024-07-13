@@ -11,11 +11,7 @@ import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.AccommodationLogService;
 import com.example.mybatisplus.service.SanitationObjectionReviewResultNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -29,5 +25,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/accommodationLog")
 public class AccommodationLogController {
 
+    @Autowired
+    private AccommodationLogService accommodationLogService;
+
+    @GetMapping("/list")
+    public JsonResponse list(@RequestParam(defaultValue = "1") int pageNo,
+                             @RequestParam(defaultValue = "10") int pageSize){
+        // 分页查找方法
+        Page<AccommodationLog> pageInfo = new Page<>(pageNo, pageSize);
+        Page<AccommodationLog> page = accommodationLogService.page(pageInfo, null);
+
+        return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
+    }
 }
 
