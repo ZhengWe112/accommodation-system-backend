@@ -12,10 +12,7 @@ import com.example.mybatisplus.service.AccommodationLogService;
 import com.example.mybatisplus.service.ResponsibleLeaderService;
 import com.example.mybatisplus.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,14 +32,24 @@ public class AccommodationLogController {
     @Autowired
     private AccommodationLogService accommodationLogService;
 
+    @GetMapping("/list")
+    public JsonResponse list(@RequestParam(defaultValue = "1") int pageNo,
+                             @RequestParam(defaultValue = "10") int pageSize){
+        // 分页查找方法
+        Page<AccommodationLog> pageInfo = new Page<>(pageNo, pageSize);
+        Page<AccommodationLog> page = accommodationLogService.page(pageInfo, null);
+
+        return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
+    }
+  
     @Autowired
     private ResponsibleLeaderService responsibleLeaderService;
 
     @Autowired
     private StudentService studentService;
 
-    @GetMapping("/list")
-    public JsonResponse list(int pageNo, int pageSize, Long studentId) {
+    @GetMapping("/listWithStudent")
+    public JsonResponse listWithStudent(int pageNo, int pageSize, Long studentId) {
         LambdaQueryWrapper<AccommodationLog> wrapper = new LambdaQueryWrapper<>();
 
         if (studentId != null) {
