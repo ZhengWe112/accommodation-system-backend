@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -17,4 +19,6 @@ import org.apache.ibatis.annotations.Param;
 public interface StudentMapper extends BaseMapper<Student> {
 
     Long getRoomId(@Param("studentId") Long studentId);
+
+    List<Student> selectByStudent(@Param("student") Student student);
 }

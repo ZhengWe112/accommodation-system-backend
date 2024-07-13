@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mybatisplus.mapper.TeacherMapper">
-
+    <select id="selectByTeacher" resultType="com.example.mybatisplus.model.domain.Teacher">
+        select  * from student
+        <where>
+            <if test="teacher.teacher_id != null">
+                and teacher_id = #{teacher.teacher_id}
+            </if>
+            <if test="teacher.fullname != null and teacher.fullname != ''">
+                and fullname= #{teacher.fullname}
+            </if>
+            <if test="teacher.professional_title != null">
+                and professional_title = #{teacher.professional_title}
+            </if>
+            <if test="teacher.collage_name != null">
+                and collage_name = #{teacher.collage_name}
+            </if>
+            <if test="teacher.major != null">
+                and major = #{teacher.major}
+            </if>
+        </where>
+    </select>
 </mapper>

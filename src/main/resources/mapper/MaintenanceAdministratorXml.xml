@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mybatisplus.mapper.MaintenanceAdministratorMapper">
-
+    <select id="selectByMaintenanceAdministrator" resultType="com.example.mybatisplus.model.domain.MaintenanceAdministrator">
+        select  * from maintenance_administrator
+        <where>
+            <if test="maintenance_administrator.job_id != null">
+                and job_id = #{maintenance_administrator.job_id}
+            </if>
+            <if test="maintenance_administrator.fullname != null and maintenance_administrator.fullname != ''">
+                and fullname= #{maintenance_administrator.fullname}
+            </if>
+            <if test="maintenance_administrator.password != null">
+                and password = #{maintenance_administrator.password}
+            </if>
+        </where>
+    </select>
 </mapper>

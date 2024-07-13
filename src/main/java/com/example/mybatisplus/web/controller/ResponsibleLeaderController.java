@@ -4,18 +4,17 @@ package com.example.mybatisplus.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
-import com.example.mybatisplus.model.domain.AccommodationApplication;
-import com.example.mybatisplus.model.domain.AccommodationLog;
-import com.example.mybatisplus.model.domain.AccommodationNotification;
-import com.example.mybatisplus.model.domain.SanitationObjectionReviewResultNotification;
+import com.example.mybatisplus.model.domain.*;
 import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.AccommodationApplicationService;
 import com.example.mybatisplus.service.AccommodationLogService;
 import com.example.mybatisplus.service.AccommodationNotificationService;
+import com.example.mybatisplus.service.ResponsibleLeaderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -34,6 +33,9 @@ public class ResponsibleLeaderController {
 
     @Autowired
     private AccommodationLogService accommodationLogService;
+
+    @Autowired
+    private ResponsibleLeaderService responsibleLeaderService;
 
     // 需求：审核由分管领导执行，审核结束后需要将申请状态返回给学生，分管领导可以通过或者驳回申请，申请状态变为“通过”或者“驳回”。
     // 对应到表中state:申请状态 0表示等待审核 1表示审核通过 2表示被驳回
@@ -82,6 +84,43 @@ public class ResponsibleLeaderController {
         Page<AccommodationLog> page = accommodationLogService.page(pageInfo, wrapper);
 
         return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
+    }
+
+    @GetMapping("/list")
+    @ResponseBody
+    public JsonResponse list(){
+        List<ResponsibleLeader> list =     responsibleLeaderService.list();
+        return JsonResponse.success(list);
+    }
+
+    @PostMapping("/listByKey")
+    @ResponseBody
+    public JsonResponse listByKey(@RequestBody ResponsibleLeader     responsibleLeader){
+        LambdaQueryWrapper<ResponsibleLeader> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(ResponsibleLeader::getJobId,     responsibleLeader.getJobId());
+        List<ResponsibleLeader> list =     responsibleLeaderService.list(wrapper);
+        return JsonResponse.success(list);
+    }
+
+    @PostMapping("/updateById")
+    @ResponseBody
+    public JsonResponse updateById(@RequestBody ResponsibleLeader     responsibleLeader ){
+        boolean b =     responsibleLeaderService.updateById(    responsibleLeader);
+        return JsonResponse.success(b);
+    }
+
+    @PostMapping("/insertById")
+    @ResponseBody
+    public JsonResponse insertById(@RequestBody ResponsibleLeader     responsibleLeader ){
+        boolean save =     responsibleLeaderService.save(    responsibleLeader);
+        return JsonResponse.success(save);
+    }
+
+    @PostMapping("/deleteById")
+    @ResponseBody
+    public JsonResponse deleteById(@RequestBody ResponsibleLeader     responsibleLeader ){
+        boolean b =     responsibleLeaderService.removeById(    responsibleLeader);
+        return JsonResponse.success(b);
     }
 }
 
