@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024-07-13 12:23:18
  */
 @RestController
-@RequestMapping("/example.mybatisplus/bed")
+@RequestMapping("/api/bed")
 public class BedController {
 
 }

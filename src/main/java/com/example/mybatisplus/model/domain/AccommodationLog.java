@@ -39,9 +39,15 @@ public class AccommodationLog implements Serializable {
     @TableField("responsible_leader_id")
     private Long responsibleLeaderId;
 
+    @TableField(exist = false)
+    private String responsibleLeaderName;
+
     @ApiModelProperty("外键 关联到表student 这条记录是谁申请的")
     @TableField("student_id")
     private Long studentId;
+
+    @TableField(exist = false)
+    private String studentName;
 
     @ApiModelProperty("此次申请的时间")
     @TableField("request_time")
@@ -75,7 +81,7 @@ public class AccommodationLog implements Serializable {
 
     @TableField("is_deleted")
     @TableLogic
-    private Boolean isDeleted;
+    private Boolean deleted;
 
 
 }

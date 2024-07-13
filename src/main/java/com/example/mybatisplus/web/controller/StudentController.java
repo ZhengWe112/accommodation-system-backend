@@ -6,12 +6,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
 import com.example.mybatisplus.model.domain.*;
 import com.example.mybatisplus.model.dto.PageResponseDTO;
-import com.example.mybatisplus.service.AccommodationApplicationService;
-import com.example.mybatisplus.service.AccommodationLogService;
-import com.example.mybatisplus.service.MaintenanceRecordService;
-import com.example.mybatisplus.service.MaintenanceRequestService;
+import com.example.mybatisplus.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -37,6 +38,15 @@ public class StudentController {
 
     @Autowired
     private MaintenanceRequestService maintenanceRequestService;
+
+    @Autowired
+    private StudentService studentService;
+
+    @Autowired
+    private BedService bedService;
+
+    @Autowired
+    private RoomService roomService;
 
 
     // 需求：表单填写完成并提交后，申请状态会变为“正在审核”
@@ -68,6 +78,11 @@ public class StudentController {
     // 需求：学生登记维修信息，提出维修申请，维修管理员可以收到维修通知。
     @PostMapping("/maintenance")
     public JsonResponse<String> request(@RequestBody MaintenanceRequest maintenanceRequest) {
+        maintenanceRequest.setRequestTime(LocalDateTime.now()).setState(0);
+        Long roomId = studentService.getRoomId(maintenanceRequest.getStudentId());
+        Room room = roomService.getById(roomId);
+        maintenanceRequest.setRoomNumber(room.getRoomNumber());
+
         boolean addedFlag = maintenanceRequestService.save(maintenanceRequest); // save方法添加维修申请
         if (addedFlag) {
             return JsonResponse.success("维修申请成功。");
@@ -87,6 +102,58 @@ public class StudentController {
         Page<MaintenanceRequest> page = maintenanceRequestService.page(pageInfo, wrapper);
 
         return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
+    }
+
+    @GetMapping("/list/unbooked")
+    public JsonResponse listUnbooked() {
+        LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
+
+        wrapper.eq(Student::getIsDormitoryResident, 0);
+
+        List<Student> students = studentService.list(wrapper);
+
+        return JsonResponse.success(students);
+    }
+
+    @PostMapping("/batch")
+    public JsonResponse<String> batch(@RequestBody List<Student> students) {
+        students = students.stream().filter(student -> student.getBedId() == null).collect(Collectors.toList());
+
+        List<Bed> beds = bedService.list(new LambdaQueryWrapper<Bed>().eq(Bed::getIsEmpty, 0));
+        if (beds.size() < students.size()) {
+            return JsonResponse.failure("床位不够了");
+        } else {
+            for (int i = 0; i < students.size(); i++) {
+                Student student = students.get(i);
+                Bed bed = beds.get(i);
+                student.setBedId(bed.getId());
+                bed.setStudentId(student.getId());
+            }
+
+            bedService.updateBatchById(beds);
+            studentService.updateBatchById(students);
+
+        }
+        return JsonResponse.success("success");
+    }
+
+    @PostMapping("/unBatch")
+    public JsonResponse<String> unBatch(@RequestBody List<Student> students) {
+        students = students.stream().filter(student -> student.getBedId() != null).collect(Collectors.toList());
+
+        List<Long> ids = students.stream().map(Student::getBedId).toList();
+
+        List<Bed> beds = ids.stream().map(id -> bedService.getById(id)).toList();
+
+        beds = beds.stream().map(bed -> bed.setStudentId(null)).collect(Collectors.toList());
+
+        bedService.updateBatchById(beds);
+
+        students = students.stream().map(student -> student.setBedId(null)).collect(Collectors.toList());
+
+        studentService.updateBatchById(students);
+
+        return JsonResponse.success("success");
     }
 }
 

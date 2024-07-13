@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -36,10 +37,9 @@ public class MaintenanceAdministratorController {
     private MaintenanceRequestService maintenanceRequestService;
 
     // 需求：维修管理员分配维修人员到场维修，修改维修申请状态，通知学生
-    @PostMapping("/process")
-    public JsonResponse<String> process(@RequestBody MaintenanceRequest maintenanceRequest,
-                                        @RequestParam LocalDate maintenanceTime,
-                                        @RequestParam String maintainerName) {
+    @GetMapping("/process")
+    public JsonResponse<String> process(Long id, @RequestParam String maintainerName) {
+        MaintenanceRequest maintenanceRequest = maintenanceRequestService.getById(id);
         // 处理申请记录
         maintenanceRequest.setState(1);
         boolean updatedFlag = maintenanceRequestService.updateById(maintenanceRequest);
@@ -48,7 +48,7 @@ public class MaintenanceAdministratorController {
             MaintenanceRecord maintenanceRecord = new MaintenanceRecord();
             maintenanceRecord.setStudentId(maintenanceRequest.getStudentId()).
                     setMaintenanceItem(maintenanceRequest.getRequestItem()).
-                    setMaintenanceTime(maintenanceTime).
+                    setMaintenanceTime(LocalDate.now()).
                     setDamageReason(maintenanceRequest.getReason()).
                     setMaintainerName(maintainerName);
             boolean addedFlag = maintenanceRecordService.save(maintenanceRecord); // save方法添加记录
