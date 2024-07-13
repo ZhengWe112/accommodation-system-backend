@@ -6,10 +6,7 @@ import com.example.mybatisplus.common.JsonResponse;
 import com.example.mybatisplus.common.utls.SessionUtils;
 import com.example.mybatisplus.mapper.ParkMapper;
 import com.example.mybatisplus.model.domain.*;
-import com.example.mybatisplus.service.BedService;
-import com.example.mybatisplus.service.BuildingService;
-import com.example.mybatisplus.service.ParkService;
-import com.example.mybatisplus.service.RoomService;
+import com.example.mybatisplus.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +29,9 @@ public class SystemAdministratorController {
 
     @Autowired
     private BuildingService buildingService;
+
+    @Autowired
+    private SystemAdministratorService systemAdministratorService;
 
     @Autowired
     private RoomService roomService;
@@ -162,5 +162,43 @@ public class SystemAdministratorController {
             return JsonResponse.failure("床位删除失败。");
         }
     }
+
+    @GetMapping("/list")
+    @ResponseBody
+    public JsonResponse list(){
+        List<SystemAdministrator> list =  systemAdministratorService.list();
+        return JsonResponse.success(list);
+    }
+
+    @PostMapping("/listByKey")
+    @ResponseBody
+    public JsonResponse listByKey(@RequestBody SystemAdministrator     systemAdministrator){
+        LambdaQueryWrapper<SystemAdministrator> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(SystemAdministrator::getJobId,     systemAdministrator.getJobId());
+        List<SystemAdministrator> list = systemAdministratorService.list(wrapper);
+        return JsonResponse.success(list);
+    }
+
+    @PostMapping("/updateById")
+    @ResponseBody
+    public JsonResponse updateById(@RequestBody SystemAdministrator  systemAdministrator ){
+        boolean b = systemAdministratorService.updateById(  systemAdministrator);
+        return JsonResponse.success(b);
+    }
+
+    @PostMapping("/insertById")
+    @ResponseBody
+    public JsonResponse insertById(@RequestBody SystemAdministrator     systemAdministrator ){
+        boolean save =     systemAdministratorService.save(    systemAdministrator);
+        return JsonResponse.success(save);
+    }
+
+    @PostMapping("/deleteById")
+    @ResponseBody
+    public JsonResponse deleteById(@RequestBody SystemAdministrator     systemAdministrator ){
+        boolean b =     systemAdministratorService.removeById(    systemAdministrator);
+        return JsonResponse.success(b);
+    }
+
 }
 

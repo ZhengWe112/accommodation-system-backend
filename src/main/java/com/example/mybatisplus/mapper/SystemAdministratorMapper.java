@@ -3,6 +3,9 @@ package com.example.mybatisplus.mapper;
 import com.example.mybatisplus.model.domain.SystemAdministrator;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SystemAdministratorMapper extends BaseMapper<SystemAdministrator> {
-
+    List<SystemAdministrator> selectByManager2(@Param("systemAdministrator") SystemAdministrator systemAdministrator);
 }

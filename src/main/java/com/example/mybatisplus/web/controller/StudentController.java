@@ -146,5 +146,42 @@ public class StudentController {
 
         return JsonResponse.success("success");
     }
+
+    @GetMapping("list")
+    @ResponseBody
+    public JsonResponse list(){
+        List<Student> list = studentService.list();
+        return JsonResponse.success(list);
+    }
+
+    @PostMapping("/listByKey")
+    @ResponseBody
+    public JsonResponse listByKey(@RequestBody Student student){
+        LambdaQueryWrapper<Student> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(Student::getStudentId,student.getStudentId());
+        List<Student> list = studentService.list(wrapper);
+        return JsonResponse.success(list);
+    }
+
+    @PostMapping("/updateById")
+    @ResponseBody
+    public JsonResponse updateById(@RequestBody Student student ){
+        boolean b = studentService.updateById(student);
+        return JsonResponse.success(b);
+    }
+
+    @PostMapping("/insertById")
+    @ResponseBody
+    public JsonResponse insertById(@RequestBody Student student ){
+        boolean save = studentService.save(student);
+        return JsonResponse.success(save);
+    }
+
+    @PostMapping("/deleteById")
+    @ResponseBody
+    public JsonResponse deleteById(@RequestBody Student student ){
+        boolean b = studentService.removeById(student);
+        return JsonResponse.success(b);
+    }
 }
 

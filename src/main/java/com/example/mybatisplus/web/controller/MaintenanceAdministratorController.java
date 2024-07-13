@@ -5,17 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.mybatisplus.common.JsonResponse;
-import com.example.mybatisplus.model.domain.AccommodationApplication;
-import com.example.mybatisplus.model.domain.AccommodationLog;
-import com.example.mybatisplus.model.domain.MaintenanceRecord;
-import com.example.mybatisplus.model.domain.MaintenanceRequest;
+import com.example.mybatisplus.model.domain.*;
 import com.example.mybatisplus.model.dto.PageResponseDTO;
+import com.example.mybatisplus.service.MaintenanceAdministratorService;
 import com.example.mybatisplus.service.MaintenanceRecordService;
 import com.example.mybatisplus.service.MaintenanceRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -29,6 +28,8 @@ import java.time.LocalDate;
 @RequestMapping("/api/maintenanceAdministrator")
 public class MaintenanceAdministratorController {
 
+    @Autowired
+    private MaintenanceAdministratorService maintenanceAdministratorService;
     @Autowired
     private MaintenanceRecordService maintenanceRecordService;
 
@@ -82,6 +83,42 @@ public class MaintenanceAdministratorController {
         Page<MaintenanceRecord> page = maintenanceRecordService.page(pageInfo, null);
 
         return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
+    }
+    @GetMapping("/list1")
+    @ResponseBody
+    public JsonResponse list(){
+        List<MaintenanceAdministrator> list =     maintenanceAdministratorService.list();
+        return JsonResponse.success(list);
+    }
+
+    @PostMapping("/listByKey")
+    @ResponseBody
+    public JsonResponse listByKey(@RequestBody MaintenanceAdministrator     maintenanceAdministrator){
+        LambdaQueryWrapper<MaintenanceAdministrator> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(MaintenanceAdministrator::getJobId,     maintenanceAdministrator.getJobId());
+        List<MaintenanceAdministrator> list =     maintenanceAdministratorService.list(wrapper);
+        return JsonResponse.success(list);
+    }
+
+    @PostMapping("/updateById")
+    @ResponseBody
+    public JsonResponse updateById(@RequestBody MaintenanceAdministrator     maintenanceAdministrator ){
+        boolean b =     maintenanceAdministratorService.updateById(    maintenanceAdministrator);
+        return JsonResponse.success(b);
+    }
+
+    @PostMapping("/insertById")
+    @ResponseBody
+    public JsonResponse insertById(@RequestBody MaintenanceAdministrator     maintenanceAdministrator ){
+        boolean save =     maintenanceAdministratorService.save(    maintenanceAdministrator);
+        return JsonResponse.success(save);
+    }
+
+    @PostMapping("/deleteById")
+    @ResponseBody
+    public JsonResponse deleteById(@RequestBody MaintenanceAdministrator     maintenanceAdministrator ){
+        boolean b =     maintenanceAdministratorService.removeById(    maintenanceAdministrator);
+        return JsonResponse.success(b);
     }
 }
 

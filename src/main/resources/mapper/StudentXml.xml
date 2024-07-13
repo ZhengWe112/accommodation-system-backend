@@ -5,4 +5,31 @@
     <select id="getRoomId" resultType="java.lang.Long">
         select r.id from room as r left join bed b on r.id = b.room_id where student_id = #{studentId};
     </select>
+    <select id="selectByStudent" resultType="com.example.mybatisplus.model.domain.Student">
+        select  * from student
+        <where>
+            <if test="student.student_id != null">
+                and student_id = #{student.student_id}
+            </if>
+            <if test="student.fullname != null and student.fullname != ''">
+                and fullname= #{student.fullname}
+            </if>
+            <if test="student.grade != null">
+                and grade = #{student.grade}
+            </if>
+            <if test="student.collage_name != null">
+                and collage_name = #{student.collage_name}
+            </if>
+            <if test="student.major != null">
+                and major = #{student.major}
+            </if>
+            <if test="student.classname != null">
+                and classname = #{student.classname}
+            </if>
+        </where>
+    </select>
+    <insert id="insertById" parameterType="com.example.mybatisplus.model.domain.Student">
+        insert into student (fullname,student_id)
+        values (#{student.fullname}, #{student.student_id})
+    </insert>
 </mapper>

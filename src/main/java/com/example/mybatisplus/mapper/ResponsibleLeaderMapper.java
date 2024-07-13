@@ -3,6 +3,9 @@ package com.example.mybatisplus.mapper;
 import com.example.mybatisplus.model.domain.ResponsibleLeader;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ResponsibleLeaderMapper extends BaseMapper<ResponsibleLeader> {
-
+    List<ResponsibleLeader> selectByManager3(@Param("responsibleLeader") ResponsibleLeader responsibleLeader);
 }
