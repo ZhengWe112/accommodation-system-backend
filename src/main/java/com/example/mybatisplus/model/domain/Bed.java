@@ -1,11 +1,7 @@
 package com.example.mybatisplus.model.domain;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
@@ -36,7 +32,7 @@ public class Bed implements Serializable {
     private Long id;
 
     @ApiModelProperty("外键 关联到表student 这张床是谁的")
-    @TableField("student_id")
+    @TableField(value = "student_id", updateStrategy = FieldStrategy.IGNORED)
     private Long studentId;
 
     @ApiModelProperty("外键 关联到表teacher 这张床是谁的")
