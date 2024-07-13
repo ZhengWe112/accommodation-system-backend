@@ -17,5 +17,5 @@ import java.util.List;
  */
 @Mapper
 public interface MaintenanceAdministratorMapper extends BaseMapper<MaintenanceAdministrator> {
-    List<MaintenanceAdministrator> selectByManager1(@Param("maintenanceAdministrator") MaintenanceAdministrator maintenanceAdministrator);
+    List<MaintenanceAdministrator> selectByMaintenanceAdministrator(@Param("maintenanceAdministrator") MaintenanceAdministrator maintenanceAdministrator);
 }

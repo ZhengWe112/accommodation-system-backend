@@ -17,5 +17,5 @@ import java.util.List;
  */
 @Mapper
 public interface ResponsibleLeaderMapper extends BaseMapper<ResponsibleLeader> {
-    List<ResponsibleLeader> selectByManager3(@Param("responsibleLeader") ResponsibleLeader responsibleLeader);
+    List<ResponsibleLeader> selectByResponsibleLeader(@Param("responsibleLeader") ResponsibleLeader responsibleLeader);
 }

@@ -17,5 +17,5 @@ import java.util.List;
  */
 @Mapper
 public interface SystemAdministratorMapper extends BaseMapper<SystemAdministrator> {
-    List<SystemAdministrator> selectByManager2(@Param("systemAdministrator") SystemAdministrator systemAdministrator);
+    List<SystemAdministrator> selectBySystemAdministrator(@Param("systemAdministrator") SystemAdministrator systemAdministrator);
 }

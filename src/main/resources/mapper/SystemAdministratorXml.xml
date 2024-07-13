@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mybatisplus.mapper.SystemAdministratorMapper">
-    <select id="selectByManager2" resultType="com.example.mybatisplus.model.domain.SystemAdministrator">
+    <select id="selectBySystemAdministrator" resultType="com.example.mybatisplus.model.domain.SystemAdministrator">
         select  * from system_administrator
         <where>
             <if test="system_administrator.job_id != null">
