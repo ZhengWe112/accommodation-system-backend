@@ -63,7 +63,7 @@ public class AccommodationApplication implements Serializable {
 
     @TableField("is_deleted")
     @TableLogic
-    private Boolean isDeleted;
+    private Boolean deleted;
 
 
 }
