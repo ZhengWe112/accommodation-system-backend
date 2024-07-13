@@ -40,9 +40,15 @@ public class Building implements Serializable {
     @TableField("dormitory_administrator_id")
     private Long dormitoryAdministratorId;
 
+    @TableField(exist = false)
+    private String dormitoryAdministratorName;
+
     @ApiModelProperty("外键 关联到表park 这栋楼在那个园区")
     @TableField("park_id")
     private Long parkId;
+
+    @TableField(exist = false)
+    private String parkName;
 
     @ApiModelProperty("楼栋名")
     @TableField("building_name")

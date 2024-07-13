@@ -39,6 +39,9 @@ public class AccommodationApplication implements Serializable {
     @TableField("student_id")
     private Long studentId;
 
+    @TableField(exist = false)
+    private String studentName;
+
     @ApiModelProperty("申请时间")
     @TableField("request_time")
     private LocalDateTime requestTime;

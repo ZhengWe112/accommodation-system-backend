@@ -39,6 +39,9 @@ public class Room implements Serializable {
     @TableField("building_id")
     private Long buildingId;
 
+    @TableField(exist = false)
+    private String buildingName;
+
     @ApiModelProperty("房间号固定为4为数字 为2位楼栋编号+2位数字")
     @TableField("room_number")
     private String roomNumber;

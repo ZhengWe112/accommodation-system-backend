@@ -35,13 +35,22 @@ public class Bed implements Serializable {
     @TableField(value = "student_id", updateStrategy = FieldStrategy.IGNORED)
     private Long studentId;
 
+    @TableField(exist = false)
+    private String studentName;
+
     @ApiModelProperty("外键 关联到表teacher 这张床是谁的")
     @TableField("teacher_id")
     private Long teacherId;
 
+    @TableField(exist = false)
+    private String teacherName;
+
     @ApiModelProperty("外键 关联到表room 这张床在哪个房间")
     @TableField("room_id")
     private Long roomId;
+
+    @TableField(exist = false)
+    private String roomNumber;
 
     @ApiModelProperty("床位号")
     @TableField("bed_number")
