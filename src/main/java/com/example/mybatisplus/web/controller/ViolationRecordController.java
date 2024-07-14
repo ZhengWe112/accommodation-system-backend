@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -47,7 +48,13 @@ public class ViolationRecordController {
 
         Page<ViolationRecord> recordPage = violationRecordService.page(pageInfo, wrapper);
 
-        return JsonResponse.success(new PageResponseDTO<>(recordPage.getRecords(), recordPage.getTotal()));
+        List<ViolationRecord> records = recordPage.getRecords();
+        records = records.stream().map(record -> {
+            Student student = studentService.getById(record.getStudentId());
+            return record.setStudentName(student.getFullname());
+        }).collect(Collectors.toList());
+
+        return JsonResponse.success(new PageResponseDTO<>(records, recordPage.getTotal()));
     }
 
     @PostMapping("/add")
@@ -90,7 +97,13 @@ public class ViolationRecordController {
 
         Page<ViolationRecord> page = violationRecordService.page(pageInfo, wrapper);
 
-        return JsonResponse.success(new PageResponseDTO<>(page.getRecords(), page.getTotal()));
+        List<ViolationRecord> records = page.getRecords();
+        records = records.stream().map(record -> {
+            Student student = studentService.getById(record.getStudentId());
+            return record.setStudentName(student.getFullname());
+        }).collect(Collectors.toList());
+
+        return JsonResponse.success(new PageResponseDTO<>(records, page.getTotal()));
     }
 
     @GetMapping("send")

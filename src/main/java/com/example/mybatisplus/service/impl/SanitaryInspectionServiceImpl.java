@@ -30,6 +30,7 @@ public class SanitaryInspectionServiceImpl extends ServiceImpl<SanitaryInspectio
 
         // 计算平均分
         float average = logs.stream().map(DormSanitaryInspectionLog::getScore).reduce(0f, Float::sum);
+        average /= logs.size();
         SanitaryInspection sanitaryInspection = new SanitaryInspection();
 
         if (average >= 85) {

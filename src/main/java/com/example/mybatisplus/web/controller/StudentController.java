@@ -54,6 +54,8 @@ public class StudentController {
     public JsonResponse<String> apply(@RequestBody AccommodationApplication accommodationApplication) {
         // 对应到表中state:申请状态 0表示等待审核 1表示审核通过 2表示被驳回
 //        accommodationApplication.setState(0);// 应该在前端封装
+        accommodationApplication.setState(0).setRequestTime(LocalDateTime.now());
+
         boolean addedFlag = accommodationApplicationService.save(accommodationApplication); // save方法添加住退宿申请
         if (addedFlag) {
             return JsonResponse.success("住退宿申请成功。");

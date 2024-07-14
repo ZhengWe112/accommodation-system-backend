@@ -9,6 +9,6 @@
         select sum(s.score * d.proportion) as score, s.room_id as room_id
         from dormitory_rating_dictionary as d
             left join sanitary_inspection_record as s on d.item = s.item
-            where s.is_deleted = 0 group by s.room_id;
+            where s.is_deleted = 0 and s.sanitary_inspection_id = #{sanitaryInspectionId} group by s.room_id;
     </select>
 </mapper>

@@ -46,7 +46,7 @@ public class DormSanitaryInspectionLogServiceImpl extends ServiceImpl<DormSanita
             wrapper.eq(DormSanitaryInspectionLog::getRoomId, log.getRoomId())
                     .eq(DormSanitaryInspectionLog::getSanitaryInspectionId, id)
                     .set(DormSanitaryInspectionLog::getScore, log.getScore());
-            this.update(log, wrapper);
+            this.saveOrUpdate(log, wrapper);
         });
     }
 }

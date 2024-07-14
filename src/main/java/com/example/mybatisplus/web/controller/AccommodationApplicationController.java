@@ -10,6 +10,7 @@ import com.example.mybatisplus.model.domain.Student;
 import com.example.mybatisplus.model.dto.PageResponseDTO;
 import com.example.mybatisplus.service.AccommodationApplicationService;
 import com.example.mybatisplus.service.AccommodationLogService;
+import com.example.mybatisplus.service.AccommodationNotificationService;
 import com.example.mybatisplus.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,9 @@ public class AccommodationApplicationController {
     @Autowired
     private AccommodationLogService accommodationLogService;
 
+    @Autowired
+    private AccommodationNotificationService accommodationNotificationService;
+
     @GetMapping("/list")
     public JsonResponse list(Long studentId, int pageNo, int pageSize){
         // 分页查找方法，获取给定id学生的所有申请
@@ -61,9 +65,15 @@ public class AccommodationApplicationController {
     }
 
     @GetMapping("review")
-    public JsonResponse review(Long id, Integer isAgree, Long responsibleLeaderId, String reason) {
+    public JsonResponse review(Long id,
+                               Integer isAgree,
+                               Long responsibleLeaderId,
+                               Long preBuildingId,
+                               Long nowBuildingId,
+                               String reason) {
         AccommodationApplication accommodationApplication = new AccommodationApplication();
         accommodationApplication.setId(id);
+        System.out.println(isAgree);
 
         if (isAgree == 0) {
             accommodationApplication.setState(1);
@@ -80,11 +90,15 @@ public class AccommodationApplicationController {
                 .setStudentId(accommodationApplication.getStudentId())
                 .setRequestTime(accommodationApplication.getRequestTime())
                 .setRequestType(accommodationApplication.getRequestType())
-                .setReviewReason(reason)
+                .setReviewReason(isAgree == 1 ? reason : "同意")
                 .setReviewTime(LocalDateTime.now())
                 .setReviewState(isAgree == 1);
 
         accommodationLogService.save(accommodationLog);
+
+        if (isAgree == 0) {
+            accommodationNotificationService.sendNotification(accommodationLog, preBuildingId, nowBuildingId);
+        }
         return JsonResponse.success("success");
     }
 }

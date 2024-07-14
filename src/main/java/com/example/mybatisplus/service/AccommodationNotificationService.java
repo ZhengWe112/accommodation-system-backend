@@ -1,5 +1,6 @@
 package com.example.mybatisplus.service;
 
+import com.example.mybatisplus.model.domain.AccommodationLog;
 import com.example.mybatisplus.model.domain.AccommodationNotification;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface AccommodationNotificationService extends IService<AccommodationNotification> {
 
+    void sendNotification(AccommodationLog accommodationLog, Long preId, Long nowId);
 }

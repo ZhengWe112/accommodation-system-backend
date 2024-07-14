@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -27,6 +28,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("accommodation_notification")
 @ApiModel(value = "AccommodationNotification对象", description = "住退宿通知表 这是分管领导发给宿舍管理员的通知")
+@NoArgsConstructor
 public class AccommodationNotification implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -57,5 +59,20 @@ public class AccommodationNotification implements Serializable {
     @TableLogic
     private Boolean deleted;
 
+    public AccommodationNotification(String message, Integer type, Long dormitoryAdministratorId) {
+        this.type = type;
+        switch (type) {
+            case 0 -> {
+
+            }
+            case 1 -> {
+                ;
+            }
+            case 2 -> this.setMessage("学生" + message + "入宿").setDormitoryAdministratorId(dormitoryAdministratorId);
+
+            case 3 -> this.setMessage("学生" + message + "退宿").setDormitoryAdministratorId(dormitoryAdministratorId);
+            case 4 -> this.setMessage("学生" + message + "同楼栋换宿").setDormitoryAdministratorId(dormitoryAdministratorId);
+        }
+    }
 
 }
