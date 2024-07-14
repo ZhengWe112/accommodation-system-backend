@@ -122,5 +122,24 @@ public class ViolationRecordController {
         violationWarningService.save(violationWarning);
         return JsonResponse.success("success");
     }
+
+    @GetMapping("/list")
+    public JsonResponse list(int pageNo, int pageSize, Long studentId) {
+        LambdaQueryWrapper<ViolationRecord> wrapper = new LambdaQueryWrapper<>();
+
+        if (studentId != null) {
+            wrapper.eq(ViolationRecord::getStudentId, studentId);
+        }
+
+        Page<ViolationRecord> page = violationRecordService.page(new Page<>(pageNo, pageSize), wrapper);
+
+        List<ViolationRecord> records = page.getRecords();
+        records = records.stream().map(record -> {
+            Student student = studentService.getById(record.getStudentId());
+            return record.setStudentName(student.getFullname()).setStudentName(student.getStudentId());
+        }).collect(Collectors.toList());
+
+        return JsonResponse.success(new PageResponseDTO<>(records, page.getTotal()));
+    }
 }
 
